@@ -69,12 +69,7 @@ public class R2c {
     if (!(this.getResultSet() instanceof ResultSet)) {
       throw new ConversionException("cannot perform this action on null resultset");
     }
-    String string = resultSet.getString(rowCount);
-    if (resultSet.wasNull()) {
-      System.out.println("was null");
-      string = "";
-    }
-    return string;
+    return resultSet.getString(rowCount);
   }
 
   private String getValue(String columnName) throws SQLException, ConversionException {
