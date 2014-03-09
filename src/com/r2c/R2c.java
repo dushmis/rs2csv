@@ -50,7 +50,7 @@ public class R2c {
           innerData.add(this.getValue(rObjectHeader.getHeader()));
         }
         if ((this.validator instanceof Validator) && (this.validator.isValid(innerData))
-            && (innerData instanceof ArrayList<?> && innerData.size() >= 1)) {
+            && (innerData.size() >= 1)) {
           data.add(innerData);
         }
 
