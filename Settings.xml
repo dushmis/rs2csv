@@ -14,7 +14,7 @@
 		<user>user</user>
 		<password>password</password>
 		<driver>com.mysql.jdbc.Driver</driver>
-		<url>jdbc:mysql://10.0.1.5:3306/radius?zeroDateTimeBehavior=convertToNull</url>
+		<url>jdbc:mysql://10.0.1.5:3306/db?zeroDateTimeBehavior=convertToNull</url>
 	</database>
 	<property>
 		<attribute>query_</attribute>
