@@ -46,25 +46,12 @@ public class R2c {
       ArrayList<RObjectHeader> headers = new ArrayList<>(csvHeaders);
       while (this.getResultSet().next()) {
         ArrayList<String> innerData = new ArrayList<>();
-        // RObjectHeader dummy = null;
         for (RObjectHeader rObjectHeader : headers) {
-          // dummy = rObjectHeader;
-          String inData = this.getValue(rObjectHeader.getHeader());
-          // if (this.validator instanceof Validator) {
-          // if (this.validator.isValid(rObjectHeader, inData)) {
-          // System.out.println(rObjectHeader);
-          // innerData.add(inData);
-          // }
-          // } else {
-          innerData.add(inData);
-          // }
+          innerData.add(this.getValue(rObjectHeader.getHeader()));
         }
-        if (this.validator instanceof Validator) {
-          if (this.validator.isValid(innerData)) {
-            if (innerData instanceof ArrayList<?> && innerData.size() >= 1) {
-              data.add(innerData);
-            }
-          }
+        if ((this.validator instanceof Validator) && (this.validator.isValid(innerData))
+            && (innerData instanceof ArrayList<?> && innerData.size() >= 1)) {
+          data.add(innerData);
         }
 
       }
