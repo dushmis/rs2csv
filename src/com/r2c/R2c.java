@@ -41,7 +41,7 @@ public class R2c {
       csvHeaders = new LinkedHashSet<>();
       data = new ArrayList<ArrayList<String>>();
       for (int i = 1; i <= metaData.getColumnCount(); i++) {
-        csvHeaders.add(new RObjectHeader(metaData.getColumnName(i)));
+        csvHeaders.add(new RObjectHeader(metaData.getColumnLabel(i)));
       }
       ArrayList<RObjectHeader> headers = new ArrayList<>(csvHeaders);
       while (this.getResultSet().next()) {
