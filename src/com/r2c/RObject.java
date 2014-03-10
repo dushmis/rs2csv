@@ -9,6 +9,13 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class RObject implements Serializable {
+  
+  EventHandler event=null;
+  
+  public void addEventHandler(EventHandler eventHandler){
+    this.event=eventHandler;
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -79,6 +86,9 @@ public class RObject implements Serializable {
 
     } catch (UnsupportedEncodingException | FileNotFoundException e) {
       throw new ConversionException(e);
+    }
+    if(this.event instanceof EventHandler){
+      this.event.onDone(fileName);
     }
   }
 
