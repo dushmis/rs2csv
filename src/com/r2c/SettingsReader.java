@@ -18,6 +18,9 @@ public class SettingsReader {
   }
 
   protected Database getActiveDatabase() throws YmlException {
+    if ((settings instanceof Settings)) {
+      throw new YmlException();
+    }
     final List<Database> databases = settings.getDatabases();
     String useDatabase = settings.getUDB();
     if (databases instanceof List<?> && useDatabase instanceof String) {
