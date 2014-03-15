@@ -14,7 +14,7 @@ import javax.xml.bind.helpers.DefaultValidationEventHandler;
 /**
  * The Class YmlContext.
  */
-public class YmlContext extends JAXBContext {
+public class YmlContext extends JAXBContext implements AutoCloseable {
 
   private final JAXBContext context;
   private Marshaller marshaller;
@@ -37,6 +37,7 @@ public class YmlContext extends JAXBContext {
     return marshaller;
   }
 
+  @Override
   public void close() {
     marshaller = null;
   }

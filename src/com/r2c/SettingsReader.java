@@ -12,7 +12,9 @@ public class SettingsReader {
   Settings settings = null;
 
   public SettingsReader() throws YmlException {
-    this.settings = (Settings) new Yml<Settings>(new Settings()).unmarshalFromFile("Settings.xml");
+    try (final Yml<Settings> yml = new Yml<Settings>(new Settings());) {
+      this.settings = (Settings) yml.unmarshalFromFile("Settings.xml");
+    }
   }
 
   protected Database getActiveDatabase() throws YmlException {

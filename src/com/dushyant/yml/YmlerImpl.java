@@ -29,15 +29,17 @@ public final class YmlerImpl<E> implements YmlerIfc<E> {
         throw new YmlException(new Throwable("Default constructors is required"));
       }
       Object newInstance = constructors[0].newInstance();
-      @SuppressWarnings("unchecked")
-      Yml<E> yml = new Yml<E>((E) newInstance);
-      newInstance = null;
-      Object unmarshalFromFile =
-          yml.unmarshalFromFile(className.getSimpleName() + YmlConstants.DOT
-              + YmlConstants.EXTENSION);
-      @SuppressWarnings("unchecked")
-      E a = (E) unmarshalFromFile;
-      return a;
+      try (@SuppressWarnings("unchecked")
+      Yml<E> yml = new Yml<E>((E) newInstance);) {
+        newInstance = null;
+        Object unmarshalFromFile =
+            yml.unmarshalFromFile(className.getSimpleName() + YmlConstants.DOT
+                + YmlConstants.EXTENSION);
+        @SuppressWarnings("unchecked")
+        E a = (E) unmarshalFromFile;
+        return a;
+      }
+
     } catch (SecurityException e) {
       throw new YmlException(e);
     } catch (InstantiationException e) {
@@ -73,7 +75,8 @@ public final class YmlerImpl<E> implements YmlerIfc<E> {
     if (!this.isAnnotationPresent(e)) {
       throw new YmlException(new Throwable("Invalid annotations in class " + e));
     }
-    Yml<E> yml = new Yml<E>(e);
-    yml.marshalToFile();
+    try (Yml<E> yml = new Yml<E>(e);) {
+      yml.marshalToFile();
+    }
   }
 }
