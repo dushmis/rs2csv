@@ -27,12 +27,10 @@ public final class YmlerImpl<E> implements YmlerIfc<E> {
           throw new YmlException(new Throwable("Default constructors is required"));
         }
         newInstance = null;
-        Object unmarshalFromFile =
+        E unmarshalFromFile =
             yml.unmarshalFromFile(className.getSimpleName() + YmlConstants.DOT
                 + YmlConstants.EXTENSION);
-        @SuppressWarnings("unchecked")
-        E a = (E) unmarshalFromFile;
-        return a;
+        return unmarshalFromFile;
       }
 
     } catch (SecurityException | IllegalAccessException | IllegalArgumentException
