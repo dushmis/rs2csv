@@ -1,6 +1,3 @@
-/*
- * @author - dushyant
- */
 package com.dushyant.yml;
 
 import java.io.BufferedWriter;
@@ -64,18 +61,13 @@ public class Yml<T> implements AutoCloseable {
     }
   }
 
-  /**
-   * @param createUnmarshaller
-   * @return
-   * @throws YmlException
-   * @throws JAXBException
-   */
+
   private Schema validate(final Unmarshaller createUnmarshaller) throws YmlException {
     Schema schema = null;
     try {
       createUnmarshaller.setEventHandler(new DefaultValidationEventHandler());
       SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      schema = sf.newSchema(new File("Schema.xsd"));
+      schema = sf.newSchema(new File("myschema.xsd"));
     } catch (JAXBException | SAXException e) {
       throw new YmlException(e);
     }
@@ -87,7 +79,7 @@ public class Yml<T> implements AutoCloseable {
     try {
       getUnmarshaller().setEventHandler(new DefaultValidationEventHandler());
       SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      schema = sf.newSchema(new File("Schema.xsd"));
+      schema = sf.newSchema(new File("myschema.xsd"));
     } catch (JAXBException | YmlException | SAXException e) {
       throw new YmlException(e);
     }
