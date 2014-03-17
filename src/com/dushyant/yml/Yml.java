@@ -16,9 +16,27 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 public class Yml<T> implements AutoCloseable {
+  public static Marshaller getMarshaller(JAXBContext context) throws YmlException {
+    try {
+      return context.createMarshaller();
+    } catch (JAXBException e) {
+      throw new YmlException(e);
+    }
+  }
+
+  public static Unmarshaller getUnmarshaller(JAXBContext context) throws YmlException {
+    try {
+      return context.createUnmarshaller();
+    } catch (JAXBException e) {
+      throw new YmlException(e);
+    }
+  }
+
   YmlContext context;
   Marshaller marshaller;
+
   Unmarshaller unmarshaller;
+
   T object;
 
   public Yml(T object) throws YmlException {
@@ -43,13 +61,6 @@ public class Yml<T> implements AutoCloseable {
     return context.createMarshaller();
   }
 
-  public static Marshaller getMarshaller(JAXBContext context) throws YmlException {
-    try {
-      return context.createMarshaller();
-    } catch (JAXBException e) {
-      throw new YmlException(e);
-    }
-  }
 
   public Unmarshaller getUnmarshaller() throws YmlException {
     try {
@@ -61,17 +72,16 @@ public class Yml<T> implements AutoCloseable {
     }
   }
 
+  public void marshalToFile() throws YmlException {
+    marshal(this.object.getClass().getSimpleName() + YmlConstants.DOT + YmlConstants.EXTENSION);
+  }
 
-  private Schema validate(final Unmarshaller createUnmarshaller) throws YmlException {
-    Schema schema = null;
-    try {
-      createUnmarshaller.setEventHandler(new DefaultValidationEventHandler());
-      SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      schema = sf.newSchema(new File("myschema.xsd"));
-    } catch (JAXBException | SAXException e) {
-      throw new YmlException(e);
-    }
-    return schema;
+  public void marshalToFile(String fileName) throws YmlException {
+    marshal(fileName);
+  }
+
+  public Object unmarshalFromFile(String fileName) throws YmlException {
+    return this.unmarshal(fileName);
   }
 
   public boolean validate() throws YmlException {
@@ -84,26 +94,6 @@ public class Yml<T> implements AutoCloseable {
       throw new YmlException(e);
     }
     return schema != null ? true : false;
-  }
-
-  public static Unmarshaller getUnmarshaller(JAXBContext context) throws YmlException {
-    try {
-      return context.createUnmarshaller();
-    } catch (JAXBException e) {
-      throw new YmlException(e);
-    }
-  }
-
-  public void marshalToFile(String fileName) throws YmlException {
-    marshal(fileName);
-  }
-
-  public void marshalToFile() throws YmlException {
-    marshal(this.object.getClass().getSimpleName() + YmlConstants.DOT + YmlConstants.EXTENSION);
-  }
-
-  public Object unmarshalFromFile(String fileName) throws YmlException {
-    return this.unmarshal(fileName);
   }
 
   private void marshal(String simpleName) throws YmlException {
@@ -121,6 +111,18 @@ public class Yml<T> implements AutoCloseable {
     } catch (JAXBException | YmlException e) {
       throw new YmlException(e);
     }
+  }
+
+  private Schema validate(final Unmarshaller createUnmarshaller) throws YmlException {
+    Schema schema = null;
+    try {
+      createUnmarshaller.setEventHandler(new DefaultValidationEventHandler());
+      SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      schema = sf.newSchema(new File("myschema.xsd"));
+    } catch (JAXBException | SAXException e) {
+      throw new YmlException(e);
+    }
+    return schema;
   }
 
 }
