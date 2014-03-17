@@ -89,7 +89,7 @@ public class Yml<T> implements AutoCloseable {
     try {
       getUnmarshaller().setEventHandler(new DefaultValidationEventHandler());
       SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      schema = sf.newSchema(new File("myschema.xsd"));
+      schema = sf.newSchema(new File("Schema.xsd"));
     } catch (JAXBException | YmlException | SAXException e) {
       throw new YmlException(e);
     }
@@ -118,7 +118,7 @@ public class Yml<T> implements AutoCloseable {
     try {
       createUnmarshaller.setEventHandler(new DefaultValidationEventHandler());
       SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      schema = sf.newSchema(new File("myschema.xsd"));
+      schema = sf.newSchema(new File("Schema.xsd"));
     } catch (JAXBException | SAXException e) {
       throw new YmlException(e);
     }
