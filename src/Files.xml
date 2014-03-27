@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<files>
+  <xmlfile>
+    <fileName>Settings.xml</fileName>
+    <className>com.dushyant.xml.Settings</className>
+  </xmlfile>
+  <xmlfile>
+    <fileName>One.xml</fileName>
+    <className>com.dushyant.xml.Settings</className>
+  </xmlfile>
+</files>
+
