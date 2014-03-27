@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 public class RObject implements Serializable {
+  static Logger logger = Logger.getLogger(RObject.class);
   
   EventHandler event=null;
   
@@ -66,6 +69,8 @@ public class RObject implements Serializable {
   }
 
   public void toCSV(String fileName) throws ConversionException {
+    logger.debug("tocsv");
+    logger.debug("tocsv = "+fileName);
     try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
       Set<RObjectHeader> headers = getCsvHeaders();
       Iterator<RObjectHeader> it = headers.iterator();
@@ -74,8 +79,10 @@ public class RObject implements Serializable {
         writer.print("\"" + cHeader.getHeader() + "\"");
         writer.print(",");
       }
+      logger.debug("tocsv = header written");
       writer.println("");
       ArrayList<ArrayList<String>> data = getData();
+      logger.debug("tocsv = data size "+data.size());
       for (ArrayList<String> indata : data) {
         for (String da : indata) {
           writer.print("\"" + da + "\"");
@@ -83,6 +90,7 @@ public class RObject implements Serializable {
         }
         writer.println("");
       }
+      logger.debug("tocsv = data written ");
 
     } catch (UnsupportedEncodingException | FileNotFoundException e) {
       throw new ConversionException(e);

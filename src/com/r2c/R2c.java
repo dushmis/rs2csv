@@ -7,7 +7,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 public class R2c {
+  
+  static Logger logger = Logger.getLogger(R2c.class);
+  
   ResultSet resultSet = null;
   Validator<ArrayList<String>> validator = null;
 
@@ -37,22 +42,29 @@ public class R2c {
         throw new ConversionException("Invalid resultset");
       }
       final ResultSetMetaData metaData = this.getResultSet().getMetaData();
+      logger.debug(metaData);
       csv = new RObject();
+      logger.debug(csv);
       csvHeaders = new LinkedHashSet<>();
       data = new ArrayList<ArrayList<String>>();
       for (int i = 1; i <= metaData.getColumnCount(); i++) {
         csvHeaders.add(new RObjectHeader(metaData.getColumnLabel(i)));
       }
+      logger.debug(csvHeaders);
       ArrayList<RObjectHeader> headers = new ArrayList<>(csvHeaders);
       while (this.getResultSet().next()) {
         ArrayList<String> innerData = new ArrayList<>();
         for (RObjectHeader rObjectHeader : headers) {
           innerData.add(this.getValue(rObjectHeader.getHeader()));
         }
+        logger.debug(innerData);
         if ((this.validator instanceof Validator) && (this.validator.isValid(innerData))
             && (innerData.size() >= 1)) {
           data.add(innerData);
+        }else{
+          logger.debug("NOT VALID");
         }
+        logger.debug(innerData);
 
       }
       data.trimToSize();
