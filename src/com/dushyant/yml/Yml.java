@@ -1,99 +1,131 @@
-/*
-*
-*/
 package com.dushyant.yml;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.helpers.DefaultValidationEventHandler;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
-public final class YmlerImpl<E> implements YmlerIfc<E> {
+import org.xml.sax.SAXException;
 
-  public YmlerImpl() {}
-
-  @Override
-  public void append(E e) throws YmlException {
-    throw new YmlException(new Throwable("not implemented"));
-  }
-
-  @Override
-  public E get(Class<E> className) throws YmlException {
+public class Yml<T> implements AutoCloseable {
+  public static Marshaller getMarshaller(JAXBContext context) throws YmlException {
     try {
-      Constructor<?>[] constructors = className.getConstructors();
-      if (constructors.length < 1) {
-        throw new YmlException(new Throwable("Default constructors is required"));
-      }
-      Object newInstance = constructors[0].newInstance();
-      try (@SuppressWarnings("unchecked")
-      Yml<E> yml = new Yml<E>((E) newInstance);) {
-        newInstance = null;
-        Object unmarshalFromFile =
-            yml.unmarshalFromFile(className.getSimpleName() + YmlConstants.DOT
-                + YmlConstants.EXTENSION);
-        @SuppressWarnings("unchecked")
-        E a = (E) unmarshalFromFile;
-        return a;
-      }
-
-    } catch (SecurityException e) {
-      throw new YmlException(e);
-    } catch (InstantiationException e) {
-      throw new YmlException(e);
-    } catch (IllegalAccessException e) {
-      throw new YmlException(e);
-    } catch (IllegalArgumentException e) {
-      throw new YmlException(e);
-    } catch (InvocationTargetException e) {
+      return context.createMarshaller();
+    } catch (JAXBException e) {
       throw new YmlException(e);
     }
   }
 
-  private boolean isAnnotationPresent(E e) {
-    boolean isValid = false;
-    final Class<? extends Object> clazz = e.getClass();
-    if (clazz.isAnnotationPresent(XmlAccessorType.class)
-        && clazz.isAnnotationPresent(XmlRootElement.class)) {
-      isValid = true;
-      for (Field field : clazz.getDeclaredFields()) {
-        if (field.getType().equals(List.class)) {
-          if (field.isAnnotationPresent(XmlElement.class)) {} else {
-            isValid = false;
-          }
-        }
-      }
-    }
-    return isValid;
-  }
-
-  @Override
-  public void exportXml(E e) throws YmlException {
-    if (!this.isAnnotationPresent(e)) {
-      throw new YmlException(new Throwable("Invalid annotations in class " + e));
-    }
-    try (Yml<E> yml = new Yml<E>(e);) {
-      yml.marshalToFile();
-    }
-  }
-
-
-  @Override
-  public E importXml(Class<E> eClass, String fileName) throws YmlException {
-    E e2 = null;
+  public static Unmarshaller getUnmarshaller(JAXBContext context) throws YmlException {
     try {
-      @SuppressWarnings("unchecked")
-      final Class<? extends E> clazz = (Class<? extends E>) eClass.getClass();
-      final E newInstance = clazz.newInstance();
-      try (Yml<E> yml = new Yml<E>(newInstance)) {
-        e2 = yml.unmarshalFromFile(fileName);
-      }
-    } catch (InstantiationException | IllegalAccessException e) {
+      return context.createUnmarshaller();
+    } catch (JAXBException e) {
       throw new YmlException(e);
     }
-    return e2;
   }
+
+  YmlContext context;
+  Marshaller marshaller;
+
+  Unmarshaller unmarshaller;
+
+  T object;
+
+  public Yml(T object) throws YmlException {
+    this.object = object;
+    JAXBContext newInstance = null;
+    try {
+      newInstance = JAXBContext.newInstance(object.getClass());
+    } catch (JAXBException e) {
+      throw new YmlException(e);
+    }
+    context = new YmlContext(newInstance);
+    marshaller = getMarshaller();
+    unmarshaller = getUnmarshaller();
+  }
+
+  // auto
+  @Override
+  public void close() {
+    context.close();
+  }
+
+  public Marshaller getMarshaller() {
+    return context.createMarshaller();
+  }
+
+
+  public Unmarshaller getUnmarshaller() throws YmlException {
+    try {
+      final Unmarshaller createUnmarshaller = context.createUnmarshaller();
+      // createUnmarshaller.setSchema(validate(createUnmarshaller));
+      return createUnmarshaller;
+    } catch (JAXBException e) {
+      throw new YmlException(e);
+    }
+  }
+
+  public void marshalToFile() throws YmlException {
+    marshal(this.object.getClass().getSimpleName() + YmlConstants.DOT + YmlConstants.EXTENSION);
+  }
+
+  public void marshalToFile(String fileName) throws YmlException {
+    marshal(fileName);
+  }
+
+  @SuppressWarnings("unchecked")
+  public T unmarshalFromFile(String fileName) throws YmlException {
+    return (T) unmarshal(fileName);
+  }
+
+  public boolean validate() throws YmlException {
+    /*Schema schema = null;
+    try {
+      getUnmarshaller().setEventHandler(new DefaultValidationEventHandler());
+      SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      schema = sf.newSchema(new File("Schema.xsd"));
+    } catch (JAXBException | YmlException | SAXException e) {
+      throw new YmlException(e);
+    }*/
+    return true ;
+  }
+
+  private void marshal(String simpleName) throws YmlException {
+    try (FileWriter fileWriter = new FileWriter(simpleName);
+        BufferedWriter writer = new BufferedWriter(fileWriter);) {
+      getMarshaller().marshal(this.object, writer);
+    } catch (IOException | JAXBException e) {
+      throw new YmlException(e);
+    }
+  }
+
+  private Object unmarshal(String simpleName) throws YmlException {
+    try {
+      return getUnmarshaller().unmarshal(new File(simpleName));
+    } catch (JAXBException | YmlException e) {
+      throw new YmlException(e);
+    }
+  }
+
+  @SuppressWarnings("unused")
+  private Schema validate(final Unmarshaller createUnmarshaller) throws YmlException {
+    Schema schema = null;
+    try {
+      createUnmarshaller.setEventHandler(new DefaultValidationEventHandler());
+      SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      schema = sf.newSchema(new File("Schema.xsd"));
+    } catch (JAXBException | SAXException e) {
+      throw new YmlException(e);
+    }
+    return schema;
+  }
+
 }

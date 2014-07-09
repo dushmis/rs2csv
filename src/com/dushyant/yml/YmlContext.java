@@ -1,19 +1,19 @@
-/*
- * @author - dushyant
- */
-
 package com.dushyant.yml;
+
+import java.io.File;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.Unmarshaller.Listener;
 import javax.xml.bind.helpers.DefaultValidationEventHandler;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
-/**
- * The Class YmlContext.
- */
+import org.xml.sax.SAXException;
+
 public class YmlContext extends JAXBContext implements AutoCloseable {
 
   private final JAXBContext context;
@@ -45,13 +45,22 @@ public class YmlContext extends JAXBContext implements AutoCloseable {
   @Override
   public Unmarshaller createUnmarshaller() throws JAXBException {
     unmarshaller = context.createUnmarshaller();
+    unmarshaller.setListener(new Listener() {
+
+    });
     unmarshaller.setEventHandler(new DefaultValidationEventHandler());
+    SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    Schema schema = null;
+    try {
+      schema = sf.newSchema(new File("myschema.xsd"));
+    } catch (SAXException e) {}
+    unmarshaller.setSchema(schema);
     return unmarshaller;
   }
 
   @Override
   @SuppressWarnings("deprecation")
   public javax.xml.bind.Validator createValidator() throws JAXBException {
-    return context.createValidator();
+    return null;
   }
 }

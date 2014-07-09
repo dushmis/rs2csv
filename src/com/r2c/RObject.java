@@ -12,13 +12,13 @@ import org.apache.log4j.Logger;
 
 public class RObject implements Serializable {
   static Logger logger = Logger.getLogger(RObject.class);
-  
-  EventHandler event=null;
-  
-  public void addEventHandler(EventHandler eventHandler){
-    this.event=eventHandler;
+
+  EventHandler event = null;
+
+  public void addEventHandler(EventHandler eventHandler) {
+    this.event = eventHandler;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -70,23 +70,23 @@ public class RObject implements Serializable {
 
   public void toCSV(String fileName) throws ConversionException {
     logger.debug("tocsv");
-    logger.debug("tocsv = "+fileName);
-    try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
+    logger.debug("tocsv = " + fileName);
+    try (PrintWriter writer = new PrintWriter(fileName, Constants.ENCODING)) {
       Set<RObjectHeader> headers = getCsvHeaders();
       Iterator<RObjectHeader> it = headers.iterator();
       while (it.hasNext()) {
         RObjectHeader cHeader = it.next();
         writer.print("\"" + cHeader.getHeader() + "\"");
-        writer.print(",");
+        writer.print(Constants.SPLITTER);
       }
       logger.debug("tocsv = header written");
       writer.println("");
       ArrayList<ArrayList<String>> data = getData();
-      logger.debug("tocsv = data size "+data.size());
+      logger.debug("tocsv = data size " + data.size());
       for (ArrayList<String> indata : data) {
         for (String da : indata) {
           writer.print("\"" + da + "\"");
-          writer.print(",");
+          writer.print(Constants.SPLITTER);
         }
         writer.println("");
       }
@@ -95,7 +95,7 @@ public class RObject implements Serializable {
     } catch (UnsupportedEncodingException | FileNotFoundException e) {
       throw new ConversionException(e);
     }
-    if(this.event instanceof EventHandler){
+    if (this.event instanceof EventHandler) {
       this.event.onDone(fileName);
     }
   }

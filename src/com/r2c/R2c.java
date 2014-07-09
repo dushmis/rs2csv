@@ -10,9 +10,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 public class R2c {
-  
+
   static Logger logger = Logger.getLogger(R2c.class);
-  
+
   ResultSet resultSet = null;
   Validator<ArrayList<String>> validator = null;
 
@@ -61,7 +61,7 @@ public class R2c {
         if ((this.validator instanceof Validator) && (this.validator.isValid(innerData))
             && (innerData.size() >= 1)) {
           data.add(innerData);
-        }else{
+        } else {
           logger.debug("NOT VALID");
         }
         logger.debug(innerData);

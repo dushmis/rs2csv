@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-public final class YmlerImpl<E> implements YmlerIfc<E> {
+public class YmlerImpl<E> implements YmlerIfc<E> {
 
   public YmlerImpl() {}
 
@@ -32,7 +32,6 @@ public final class YmlerImpl<E> implements YmlerIfc<E> {
                 + YmlConstants.EXTENSION);
         return unmarshalFromFile;
       }
-
     } catch (SecurityException | IllegalAccessException | IllegalArgumentException
         | InstantiationException e) {
       throw new YmlException(e);
