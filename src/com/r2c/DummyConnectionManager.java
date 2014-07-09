@@ -25,8 +25,7 @@ public class DummyConnectionManager implements AutoCloseable {
       this.connection = DriverManager.getConnection(db.getUrl(), db.getUser(), db.getPassword());
       this.statement = connection.createStatement();
       this.resultSet = this.statement.executeQuery(query);
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-        | SQLException | ConversionException e) {
+    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException | ConversionException e) {
       throw new ConversionException(e);
     }
   }

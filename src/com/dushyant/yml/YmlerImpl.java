@@ -18,7 +18,7 @@ public class YmlerImpl<E> implements YmlerIfc<E> {
   }
 
   @Override
-  public E get(Class<E> className) throws YmlException {
+  public E get(Class<? extends E> className) throws YmlException {
     try {
       E newInstance = className.newInstance();
       try (Yml<E> yml = new Yml<E>(newInstance)) {
@@ -27,13 +27,10 @@ public class YmlerImpl<E> implements YmlerIfc<E> {
           throw new YmlException(new Throwable("Default constructors is required"));
         }
         newInstance = null;
-        E unmarshalFromFile =
-            yml.unmarshalFromFile(className.getSimpleName() + YmlConstants.DOT
-                + YmlConstants.EXTENSION);
+        E unmarshalFromFile = yml.unmarshalFromFile(className.getSimpleName() + YmlConstants.DOT + YmlConstants.EXTENSION);
         return unmarshalFromFile;
       }
-    } catch (SecurityException | IllegalAccessException | IllegalArgumentException
-        | InstantiationException e) {
+    } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InstantiationException e) {
       throw new YmlException(e);
     }
   }
@@ -41,8 +38,7 @@ public class YmlerImpl<E> implements YmlerIfc<E> {
   private boolean isAnnotationPresent(E e) {
     boolean isValid = false;
     final Class<? extends Object> clazz = e.getClass();
-    if (clazz.isAnnotationPresent(XmlAccessorType.class)
-        && clazz.isAnnotationPresent(XmlRootElement.class)) {
+    if (clazz.isAnnotationPresent(XmlAccessorType.class) && clazz.isAnnotationPresent(XmlRootElement.class)) {
       isValid = true;
       for (Field field : clazz.getDeclaredFields()) {
         if (field.getType().equals(List.class)) {
@@ -65,9 +61,8 @@ public class YmlerImpl<E> implements YmlerIfc<E> {
     }
   }
 
-
   @Override
-  public E importXml(Class<E> eClass, String fileName) throws YmlException {
+  public E importXml(Class<? extends E> eClass, String fileName) throws YmlException {
     E e2 = null;
     try {
       final E newInstance = eClass.newInstance();

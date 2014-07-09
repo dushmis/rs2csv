@@ -68,8 +68,7 @@ public class Settings implements Serializable {
 
   @Override
   public String toString() {
-    return String.format("Settings [id=%s, udb=%s, databases=%s, properties=%s]", id, udb,
-        databases, properties);
+    return String.format("Settings [id=%s, udb=%s, databases=%s, properties=%s]", id, udb, databases, properties);
   }
 
   @Override

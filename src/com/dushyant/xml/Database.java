@@ -69,8 +69,7 @@ public class Database implements java.io.Serializable {
 
   @Override
   public String toString() {
-    return String.format("Databases [name=%s, user=%s, password=%s, driver=%s, url=%s]", name,
-        user, password, driver, url);
+    return String.format("Databases [name=%s, user=%s, password=%s, driver=%s, url=%s]", name, user, password, driver, url);
   }
 
   @Override

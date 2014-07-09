@@ -62,7 +62,6 @@ public class Yml<T> implements AutoCloseable {
     return context.createMarshaller();
   }
 
-
   public Unmarshaller getUnmarshaller() throws YmlException {
     try {
       final Unmarshaller createUnmarshaller = context.createUnmarshaller();
@@ -87,20 +86,18 @@ public class Yml<T> implements AutoCloseable {
   }
 
   public boolean validate() throws YmlException {
-    /*Schema schema = null;
-    try {
-      getUnmarshaller().setEventHandler(new DefaultValidationEventHandler());
-      SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      schema = sf.newSchema(new File("Schema.xsd"));
-    } catch (JAXBException | YmlException | SAXException e) {
-      throw new YmlException(e);
-    }*/
-    return true ;
+    /*
+     * Schema schema = null; try { getUnmarshaller().setEventHandler(new
+     * DefaultValidationEventHandler()); SchemaFactory sf =
+     * SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI); schema =
+     * sf.newSchema(new File("Schema.xsd")); } catch (JAXBException | YmlException | SAXException e)
+     * { throw new YmlException(e); }
+     */
+    return true;
   }
 
   private void marshal(String simpleName) throws YmlException {
-    try (FileWriter fileWriter = new FileWriter(simpleName);
-        BufferedWriter writer = new BufferedWriter(fileWriter);) {
+    try (FileWriter fileWriter = new FileWriter(simpleName); BufferedWriter writer = new BufferedWriter(fileWriter);) {
       getMarshaller().marshal(this.object, writer);
     } catch (IOException | JAXBException e) {
       throw new YmlException(e);

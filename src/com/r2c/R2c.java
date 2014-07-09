@@ -14,7 +14,7 @@ public class R2c {
   static Logger logger = Logger.getLogger(R2c.class);
 
   ResultSet resultSet = null;
-  Validator<ArrayList<String>> validator = null;
+  Validator<ArrayList<String>> validator = new Validator<ArrayList<String>>() {};
 
   public void addValidator(Validator<ArrayList<String>> validator) {
     this.validator = validator;
@@ -58,8 +58,7 @@ public class R2c {
           innerData.add(this.getValue(rObjectHeader.getHeader()));
         }
         logger.debug(innerData);
-        if ((this.validator instanceof Validator) && (this.validator.isValid(innerData))
-            && (innerData.size() >= 1)) {
+        if ((this.validator instanceof Validator) && (this.validator.isValid(innerData)) && (innerData.size() >= 1)) {
           data.add(innerData);
         } else {
           logger.debug("NOT VALID");

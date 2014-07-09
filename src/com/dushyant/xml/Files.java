@@ -24,7 +24,6 @@ public class Files implements java.io.Serializable {
     this.files = files;
   }
 
-
   @Override
   public String toString() {
     return String.format("Files [files=%s]", files);
