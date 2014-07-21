@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dataconfig>
+  <database>
+    <name>staging</name>
+    <user>root</user>
+    <password>aladdin</password>
+    <driver>com.mysql.jdbc.Driver</driver>
+    <url>jdbc:mysql://10.0.1.12:3306/radius?zeroDateTimeBehavior=convertToNull</url>
+  </database>
+  <database>
+    <name>rpi</name>
+    <user>root</user>
+    <password>password</password>
+    <driver>com.mysql.jdbc.Driver</driver>
+    <url>jdbc:mysql://10.0.1.5:3306/radius?zeroDateTimeBehavior=convertToNull</url>
+  </database>
+</dataconfig>

@@ -3,12 +3,14 @@ package com.r2c;
 import java.util.List;
 
 import com.dushyant.xml.Database;
+import com.dushyant.xml.Databases;
 import com.dushyant.xml.Property;
 import com.dushyant.xml.Settings;
 import com.dushyant.yml.YmlException;
 
 public class SettingsReader {
   Settings settings = null;
+  public static Databases database = null;
 
   // public SettingsReader() throws YmlException {
   // try (final Yml<Settings> yml = new Yml<Settings>(new Settings());) {
@@ -24,25 +26,17 @@ public class SettingsReader {
     if (!(settings instanceof Settings)) {
       throw new YmlException();
     }
+
     return getActiveDatabase(settings.getDatabases());
   }
 
-  /**
-   * @param databases
-   * @return
-   * @throws YmlException
-   */
   protected Database getActiveDatabase(final List<Database> databases) throws YmlException {
-    String useDatabase = settings.getUDB();
-    if (databases instanceof List<?> && useDatabase instanceof String) {
-      for (Database db : databases) {
-        if (db.getName().equals(useDatabase)) {
-          return db;
-        }
-      }
+    String udb = settings.getUDB();
+    Database database_ = database.get(udb);
+    if (database_ == null) {
+      throw new YmlException(String.format("Missing databsae config for - %s", udb));
     }
-    throw new YmlException("coudn't find database configuration...");
-
+    return database_;
   }
 
   protected List<Property> getProperties() {
