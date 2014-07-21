@@ -1,34 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
-	<id>32123</id>
-	<udb>staging</udb>
-	<database>
-		<name>production</name>
-		<user>5</user>
-		<password>6</password>
-		<driver>7</driver>
-		<url>7</url>
-	</database>
-	<database>
-		<name>staging</name>
-		<user>user</user>
-		<password>password</password>
-		<driver>com.mysql.jdbc.Driver</driver>
-		<url>jdbc:mysql://10.0.1.5:3306/db?zeroDateTimeBehavior=convertToNull</url>
-	</database>
-	<property>
-		<attribute>query_</attribute>
-		<value>select * from blah limit 100</value>
-		<name>blah1</name>
-	</property>
-	<property>
-		<attribute>query</attribute>
-		<value>select * from blah limit 10</value>
-		<name>blah2</name>
-	</property>
-	<property>
-		<attribute>query_</attribute>
-		<value>select * from login</value>
-		<name>blah3</name>
-	</property>
+  <id>32123</id>
+  <udb>rpis</udb>
+  <property>
+    <attribute>query</attribute>
+    <value>select id,username from userinfo limit 50</value>
+    <name>data1</name>
+  </property>
 </settings>
