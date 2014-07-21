@@ -6,15 +6,15 @@ import com.dushyant.xml.Database;
 import com.dushyant.xml.Property;
 
 public final class CsvTask implements Runnable {
-  private final Property property;
   private final SettingsReader settingsReader;
+  private final Property property;
 
   public CsvTask(SettingsReader settingsReader, Property property) {
     this.settingsReader = settingsReader;
     this.property = property;
   }
 
-  private synchronized RObject executeDataQuery(Database db, String query) throws ConversionException, Exception {
+  private RObject execute(Database db, String query) throws ConversionException, Exception {
     RObject rObject = null;
     R2c r2c = null;
     try (DummyConnectionManager conn = new DummyConnectionManager(db, query)) {
@@ -28,11 +28,11 @@ public final class CsvTask implements Runnable {
   @Override
   public void run() {
     try {
-      final RObject execute = executeDataQuery(settingsReader.getActiveDatabase(), property.getValue());
-      final String fileName = String.format("%s-%s.%s", property.getName(), (new java.util.Date()).getTime(), Constants.CSV);
+      final RObject execute = execute(settingsReader.getActiveDatabase(), property.getValue());
+      final String fileName =
+          String.format("%s-%s.csv", property.getName(), (new java.util.Date()).getTime());
       execute.toCSV(fileName);
     } catch (Exception e) {
-      // FIXME
       e.printStackTrace();
     }
   }
